@@ -47,16 +47,16 @@ public class ConsoleLauncher {
 		return consoleLauncher.execute(args);
 	}
 
-	private final CommandLineOptionsParser commandLineOptionsParser;
-	private final PrintStream outStream;
-	private final PrintStream errStream;
-	private final Charset charset;
+	protected final CommandLineOptionsParser commandLineOptionsParser;
+	protected final PrintStream outStream;
+	protected final PrintStream errStream;
+	protected final Charset charset;
 
-	ConsoleLauncher(CommandLineOptionsParser commandLineOptionsParser, PrintStream out, PrintStream err) {
+	protected ConsoleLauncher(CommandLineOptionsParser commandLineOptionsParser, PrintStream out, PrintStream err) {
 		this(commandLineOptionsParser, out, err, Charset.defaultCharset());
 	}
 
-	ConsoleLauncher(CommandLineOptionsParser commandLineOptionsParser, PrintStream out, PrintStream err,
+	protected ConsoleLauncher(CommandLineOptionsParser commandLineOptionsParser, PrintStream out, PrintStream err,
 			Charset charset) {
 		this.commandLineOptionsParser = commandLineOptionsParser;
 		this.outStream = out;
@@ -64,7 +64,7 @@ public class ConsoleLauncher {
 		this.charset = charset;
 	}
 
-	ConsoleLauncherExecutionResult execute(String... args) {
+	protected ConsoleLauncherExecutionResult execute(String... args) {
 		CommandLineOptions options = commandLineOptionsParser.parse(args);
 		try (PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(outStream, charset)))) {
 			if (options.isDisplayHelp()) {
@@ -79,7 +79,7 @@ public class ConsoleLauncher {
 		}
 	}
 
-	private ConsoleLauncherExecutionResult executeTests(CommandLineOptions options, PrintWriter out) {
+	protected ConsoleLauncherExecutionResult executeTests(CommandLineOptions options, PrintWriter out) {
 		try {
 			TestExecutionSummary testExecutionSummary = new ConsoleTestExecutor(options).execute(out);
 			return ConsoleLauncherExecutionResult.forSummary(testExecutionSummary);

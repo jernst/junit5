@@ -48,7 +48,7 @@ public class ConsoleTestExecutor {
 	}
 
 	// for tests only
-	ConsoleTestExecutor(CommandLineOptions options, Supplier<Launcher> launcherSupplier) {
+	protected ConsoleTestExecutor(CommandLineOptions options, Supplier<Launcher> launcherSupplier) {
 		this.options = options;
 		this.launcherSupplier = launcherSupplier;
 	}
@@ -57,7 +57,7 @@ public class ConsoleTestExecutor {
 		return new CustomContextClassLoaderExecutor(createCustomClassLoader()).invoke(() -> executeTests(out));
 	}
 
-	private TestExecutionSummary executeTests(PrintWriter out) {
+	protected TestExecutionSummary executeTests(PrintWriter out) {
 		Launcher launcher = launcherSupplier.get();
 		SummaryGeneratingListener summaryListener = registerListeners(out, launcher);
 
@@ -72,7 +72,7 @@ public class ConsoleTestExecutor {
 		return summary;
 	}
 
-	private Optional<ClassLoader> createCustomClassLoader() {
+	protected Optional<ClassLoader> createCustomClassLoader() {
 		List<Path> additionalClasspathEntries = options.getAdditionalClasspathEntries();
 		if (!additionalClasspathEntries.isEmpty()) {
 			URL[] urls = additionalClasspathEntries.stream().map(this::toURL).toArray(URL[]::new);
@@ -83,7 +83,7 @@ public class ConsoleTestExecutor {
 		return Optional.empty();
 	}
 
-	private URL toURL(Path path) {
+	protected URL toURL(Path path) {
 		try {
 			return path.toUri().toURL();
 		}
@@ -92,7 +92,7 @@ public class ConsoleTestExecutor {
 		}
 	}
 
-	private SummaryGeneratingListener registerListeners(PrintWriter out, Launcher launcher) {
+	protected SummaryGeneratingListener registerListeners(PrintWriter out, Launcher launcher) {
 		// always register summary generating listener
 		SummaryGeneratingListener summaryListener = new SummaryGeneratingListener();
 		launcher.registerTestExecutionListeners(summaryListener);
@@ -103,7 +103,7 @@ public class ConsoleTestExecutor {
 		return summaryListener;
 	}
 
-	private Optional<TestExecutionListener> createDetailsPrintingListener(PrintWriter out) {
+	protected Optional<TestExecutionListener> createDetailsPrintingListener(PrintWriter out) {
 		boolean disableAnsiColors = options.isAnsiColorOutputDisabled();
 		Theme theme = options.getTheme();
 		switch (options.getDetails()) {
@@ -121,11 +121,11 @@ public class ConsoleTestExecutor {
 		}
 	}
 
-	private Optional<TestExecutionListener> createXmlWritingListener(PrintWriter out) {
+	protected Optional<TestExecutionListener> createXmlWritingListener(PrintWriter out) {
 		return options.getReportsDir().map(reportsDir -> new XmlReportsWritingListener(reportsDir, out));
 	}
 
-	private void printSummary(TestExecutionSummary summary, PrintWriter out) {
+	protected void printSummary(TestExecutionSummary summary, PrintWriter out) {
 		// Otherwise the failures have already been printed in detail
 		if (EnumSet.of(Details.NONE, Details.SUMMARY, Details.TREE).contains(options.getDetails())) {
 			summary.printFailuresTo(out);

@@ -42,15 +42,15 @@ public class ConsoleLauncherExecutionResult {
 		return summary.getTotalFailureCount() == 0 ? SUCCESS : TEST_FAILED;
 	}
 
-	static ConsoleLauncherExecutionResult success() {
+	protected static ConsoleLauncherExecutionResult success() {
 		return new ConsoleLauncherExecutionResult(SUCCESS);
 	}
 
-	static ConsoleLauncherExecutionResult failed() {
+	protected static ConsoleLauncherExecutionResult failed() {
 		return new ConsoleLauncherExecutionResult(FAILED);
 	}
 
-	static ConsoleLauncherExecutionResult forSummary(TestExecutionSummary summary) {
+	protected static ConsoleLauncherExecutionResult forSummary(TestExecutionSummary summary) {
 		return new ConsoleLauncherExecutionResult(summary);
 	}
 
