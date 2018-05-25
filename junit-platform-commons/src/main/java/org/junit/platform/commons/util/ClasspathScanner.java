@@ -145,11 +145,15 @@ class ClasspathScanner {
 	}
 
 	private String determineFullyQualifiedClassName(Path baseDir, String basePackageName, Path classFile) {
+		String baseDirString = baseDir.toString();
 		String pathSeparator = baseDir.getFileSystem().getSeparator();
+		String basePackageString = basePackageName.replace(PACKAGE_SEPARATOR_STRING, pathSeparator);
+		if (baseDirString.endsWith(basePackageString)) {
+			baseDirString = baseDirString.substring(0, baseDirString.length() - basePackageString.length());
+		}
 		String name = classFile.toString();
-		int exclIndex = name.lastIndexOf('!');
-		if (exclIndex >= 0) {
-			name = name.substring(exclIndex + 1);
+		if (name.startsWith(baseDirString)) {
+			name = name.substring(baseDirString.length());
 		}
 		if (name.startsWith(pathSeparator)) {
 			name = name.substring(1);
